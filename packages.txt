@@ -2,3 +2,4 @@ build-essential
 pkg-config
 python3-dev
 sqlite3
+libpq-dev
