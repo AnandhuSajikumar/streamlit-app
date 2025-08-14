@@ -1,0 +1,16 @@
+[
+    {
+        "name": "Vegan Pasta",
+        "ingredients": ["pasta", "tomato sauce", "spinach"],
+        "instructions": "Boil pasta, mix with sauce and spinach.",
+        "nutrition": {"calories": 400, "protein": 12, "carbs": 60, "fat": 8},
+        "cuisine": "Italian"
+    },
+    {
+        "name": "Grilled Chicken Salad",
+        "ingredients": ["chicken", "lettuce", "olive oil"],
+        "instructions": "Grill chicken, toss with lettuce and oil.",
+        "nutrition": {"calories": 300, "protein": 25, "carbs": 10, "fat": 15},
+        "cuisine": "General"
+    }
+]
