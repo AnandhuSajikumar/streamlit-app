@@ -1,7 +1,6 @@
 import pandas as pd
 import json
 import time
-import os
 import openai
 from chromadb import PersistentClient
 from sentence_transformers import SentenceTransformer
@@ -9,7 +8,7 @@ from sentence_transformers import SentenceTransformer
 # -----------------------------
 # Configure OpenRouter API
 # -----------------------------
-openai.api_key = "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"
+openai.api_key = "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"
 openai.api_base = "https://openrouter.ai/api/v1"  # Important change
 
 # -----------------------------
@@ -44,19 +43,16 @@ def load_data(file_path):
         print(f"Error loading data: {e}")
         raise
 
-
 # -----------------------------
 # Ingest into ChromaDB
 # -----------------------------
 def ingest_to_chroma(df):
     try:
-        # Use PersistentClient so data is saved automatically
         client = PersistentClient(path="./chroma_db")
         collection = client.get_or_create_collection(name="recipes")
 
         model = SentenceTransformer('all-MiniLM-L6-v2')
 
-        # Add each recipe to the collection
         for idx, row in df.iterrows():
             embedding = model.encode(row['full_text']).tolist()
             collection.add(
@@ -74,7 +70,6 @@ def ingest_to_chroma(df):
         print(f"Error in ingest_to_chroma: {e}")
         raise
 
-
 # -----------------------------
 # Retrieve & Generate
 # -----------------------------
@@ -82,7 +77,7 @@ def rag_query(query, collection, model, dietary_restrictions, health_condition, 
     try:
         start_time = time.time()
 
-        # Create augmented query
+        # Augment query with context
         augmented_query = (
             f"{query} {dietary_restrictions} for {health_condition}. "
             f"Optimize for {nutritional_goals}."
@@ -90,7 +85,6 @@ def rag_query(query, collection, model, dietary_restrictions, health_condition, 
 
         query_embedding = model.encode(augmented_query).tolist()
 
-        # Retrieve top matches
         results = collection.query(
             query_embeddings=[query_embedding],
             n_results=5
@@ -102,9 +96,9 @@ def rag_query(query, collection, model, dietary_restrictions, health_condition, 
         context = "\n\n".join(documents) if documents else "No relevant recipes found."
         latency = time.time() - start_time
 
-        # Ask OpenRouter (using GPT-3.5 or another model)
+        # Call OpenRouter
         response = openai.ChatCompletion.create(
-            model="openai/gpt-3.5-turbo",  # You can change to free models like "nousresearch/nous-hermes-llama2-13b"
+            model="openai/gpt-3.5-turbo",
             messages=[
                 {"role": "system",
                  "content": "You are a nutrition expert. Suggest recipes, substitutions, and track goals based on context."},

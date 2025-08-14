@@ -1,1 +1,27 @@
-404: Not Found
+[
+    {
+      "name": "Grilled Chicken Salad",
+      "ingredients": ["chicken breast", "lettuce", "tomatoes", "olive oil", "lemon juice"],
+      "instructions": "Grill the chicken. Mix with lettuce, tomatoes, and dressing.",
+      "nutrition": {
+        "calories": 350,
+        "protein": 30,
+        "carbs": 10,
+        "fat": 15
+      },
+      "cuisine": "American"
+    },
+    {
+      "name": "Veggie Stir Fry",
+      "ingredients": ["broccoli", "carrots", "bell peppers", "soy sauce", "garlic"],
+      "instructions": "Stir fry all vegetables with garlic and soy sauce.",
+      "nutrition": {
+        "calories": 200,
+        "protein": 5,
+        "carbs": 25,
+        "fat": 8
+      },
+      "cuisine": "Asian"
+    }
+  ]
+  
