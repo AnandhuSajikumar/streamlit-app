@@ -1,15 +1,15 @@
 import pandas as pd
 import json
 import time
-import openai
+import requests
 from chromadb import PersistentClient
 from sentence_transformers import SentenceTransformer
 
 # -----------------------------
-# Configure OpenRouter API
+# OpenRouter API Config
 # -----------------------------
-openai.api_key = "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"
-openai.api_base = "https://openrouter.ai/api/v1"  # Important change
+API_KEY = "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"
+API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 # -----------------------------
 # Load and process recipe data
@@ -96,22 +96,26 @@ def rag_query(query, collection, model, dietary_restrictions, health_condition, 
         context = "\n\n".join(documents) if documents else "No relevant recipes found."
         latency = time.time() - start_time
 
-        # Call OpenRouter
-        response = openai.ChatCompletion.create(
-            model="openai/gpt-3.5-turbo",
-            messages=[
-                {"role": "system",
-                 "content": "You are a nutrition expert. Suggest recipes, substitutions, and track goals based on context."},
-                {"role": "user",
-                 "content": f"Context: {context}\nQuery: {augmented_query}\n"
-                            f"Provide: 1. Recommended recipes. "
-                            f"2. Substitutions for restrictions/allergies. "
-                            f"3. Nutritional analysis. "
-                            f"4. Why it matches health condition."}
+        # Call OpenRouter API directly with requests
+        headers = {
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "model": "openai/gpt-3.5-turbo",
+            "messages": [
+                {"role": "system", "content": "You are a nutrition expert. Suggest recipes, substitutions, and track goals based on context."},
+                {"role": "user", "content": f"Context: {context}\nQuery: {augmented_query}\n"
+                                            f"Provide: 1. Recommended recipes. "
+                                            f"2. Substitutions for restrictions/allergies. "
+                                            f"3. Nutritional analysis. "
+                                            f"4. Why it matches health condition."}
             ]
-        )
+        }
 
-        generated = response.choices[0].message["content"]
+        response = requests.post(API_URL, headers=headers, json=payload)
+        response.raise_for_status()
+        generated = response.json()["choices"][0]["message"]["content"]
 
         # Simple accuracy estimation
         accuracy = 1.0 if documents and any(
