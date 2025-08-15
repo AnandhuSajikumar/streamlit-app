@@ -1,6 +1,0 @@
-services:
-  - type: web
-    name: recipe-rag-app
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: streamlit run main.py --server.port $PORT --server.address 0.0.0.0
