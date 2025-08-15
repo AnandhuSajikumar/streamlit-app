@@ -2,13 +2,14 @@ import pandas as pd
 import json
 import time
 import requests
-from chromadb import InMemoryClient  # Use InMemoryClient for cloud deployments
+from chromadb import PersistentClient  # Use PersistentClient with a writable path
 from sentence_transformers import SentenceTransformer
+import os
 
 # -----------------------------
 # OpenRouter API Config
 # -----------------------------
-API_KEY = "sk-or-v1-b2293b51b86d70efcfc2bcd8494638f3a11617848673885e2d3ba6496af2771"
+API_KEY = "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"
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 # -----------------------------
@@ -44,12 +45,14 @@ def load_data(file_path):
         raise
 
 # -----------------------------
-# Ingest into ChromaDB (InMemory)
+# Ingest into ChromaDB
 # -----------------------------
 def ingest_to_chroma(df):
     try:
-        # Use InMemoryClient for cloud deployments
-        client = InMemoryClient()
+        # Ensure directory exists
+        os.makedirs("./chroma_db", exist_ok=True)
+
+        client = PersistentClient(path="./chroma_db")
         collection = client.get_or_create_collection(name="recipes")
 
         model = SentenceTransformer('all-MiniLM-L6-v2')
