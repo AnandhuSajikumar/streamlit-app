@@ -9,7 +9,8 @@ import os
 # -----------------------------
 # OpenRouter API Config
 # -----------------------------
-API_KEY = "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"
+
+API_KEY = "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"
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 # -----------------------------
