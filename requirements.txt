@@ -16,3 +16,4 @@ tqdm
 pillow
 typing-extensions
 uvicorn
+matplotlib
